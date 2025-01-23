@@ -700,5 +700,5 @@ app.post('/api/submit-description', async(req, res) => {
 // });
 
 app.listen(PORT, () => {
-    console.log(`Listening on localhost:${PORT}`);
+    console.log(`Listening on ${process.env.VITE_API_URL}`);
 });
