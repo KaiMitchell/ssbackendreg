@@ -317,6 +317,10 @@ app.get('/api/users-skills', async(req, res) => {
     };
 });
 
+app.get('/api/test', (req, res) => {
+    res.status(200).json({ message: 'test passed' });
+});
+
 //fetch all matches
 app.get('/api/matches', async(req, res) => {
     const currentUser = req.query.user;
