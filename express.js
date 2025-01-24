@@ -43,7 +43,9 @@ client
 app.use(express.json());
 app.use(express.static('assets'));
 app.use(express.static(path.join(__dirname + staticFilePath)));
-app.use(cors());
+app.use(cors({
+     origin: 'https://skillswap-wxvl.onrender.com'
+}));
 app.use(fileUpload());
 
 // Home page
