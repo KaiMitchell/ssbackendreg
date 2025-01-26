@@ -367,8 +367,8 @@ app.post('/api/pick-skills', async(req, res) => {
                                     VALUES (
                                     (SELECT users.id FROM users WHERE users.username = '${data.username}'),
                                     (SELECT skills.id FROM skills WHERE skills.name = '${item}'),
-                                    true,
-                                    false
+                                    false,
+                                    true
                                     );`
             };
             await client.query(toTeachQueryString);
