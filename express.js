@@ -2,11 +2,16 @@ import express from 'express';
 import pkg from 'pg';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import fileUpload from 'express-fileupload';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 // import jwt from 'jsonwebtoken';
 
 let PORT = 3000;
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const staticFilePath = '/assets';
 
 dotenv.config();
 
@@ -37,8 +42,10 @@ client
 //serve file relative to the static directory
 app.use(express.json());
 app.use(cors({
-     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5174'
+     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5173'
 }));
+app.use(express.static('assets'));
+app.use(express.static(path.join(__dirname + staticFilePath)));
 
 // Home page
 app.get('/api', async(req, res) => {     

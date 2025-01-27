@@ -25,6 +25,5 @@
     "pg": "^8.13.1"
   },
   "type": "module",
-  "devDependencies": {},
   "description": ""
 }
