@@ -14,7 +14,7 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);  
-const staticFilePath = process.env.NODE_ENV === 'production' ? './dist' : './assets';
+const staticFilePath = '/assets';
 const { Client } = pkg;
 let clientConfig = {};
 
@@ -44,7 +44,7 @@ app.use(express.json());
 app.use(express.static('assets'));
 app.use(express.static(path.join(__dirname + staticFilePath)));
 app.use(cors({
-     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5173'
+     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5174'
 }));
 app.use(fileUpload());
 
