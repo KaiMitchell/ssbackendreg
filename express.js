@@ -42,7 +42,7 @@ client
 //serve file relative to the static directory
 app.use(express.json());
 app.use(cors({
-     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5173'
+     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5174'
 }));
 app.use(express.static('assets'));
 app.use(express.static(path.join(__dirname + staticFilePath)));
