@@ -41,8 +41,8 @@ client
 
 //serve file relative to the static directory
 app.use(express.json());
-app.use(cors({
-     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5174'
+app.use(cors({ 
+     origin: process.env.NODE_ENV === 'production' ? 'https://skillswap-wxvl.onrender.com' : 'http://localhost:5173'
 }));
 app.use(express.static('assets'));
 app.use(express.static(path.join(__dirname + staticFilePath)));
@@ -607,7 +607,6 @@ app.get('/api/fetch-profile-skills', async(req, res) => {
 app.post('/api/handle-match-request', async(req, res) => {
     const { currentUser, selectedUser, isRequested } = req.body;
     try{
-
         let query;
         if(!isRequested) {
             //Remove from match_requests table 
