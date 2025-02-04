@@ -416,13 +416,13 @@ app.get('/api/main-filter-teach-profiles', async(req, res) => {
 
         const results = await client.query(
             `
-            SELECT u.username, c.category, ARRAY_AGG(s.name) skills, us.is_teaching FROM users u
+            SELECT u.username, c.category, u.profile_picture, ARRAY_AGG(s.name) skills, us.is_teaching FROM users u
             JOIN users_skills us ON us.user_id = u.id
             JOIN skills s ON us.skill_id = s.id
             JOIN categories_skills cs ON cs.skill_id = s.id
             JOIN categories c ON cs.category_id = c.id
             WHERE us.is_teaching = true ${filters.join(' ')}
-            GROUP BY c.category, u.username, us.is_teaching, us.is_teaching${groupBy.join(' ')}
+            GROUP BY c.category, u.username, u.profile_picture, us.is_teaching, us.is_teaching${groupBy.join(' ')}
             ORDER BY u.username
             `
         );
@@ -478,7 +478,8 @@ app.get('/api/main-filter-learn-profiles', async(req, res) => {
                 u.username, 
                 ARRAY_AGG(s.name) AS skills, 
                 us.is_learning, 
-                us.is_teaching 
+                us.is_teaching,
+                u.profile_picture
             FROM 
                 users u
             JOIN 
@@ -493,6 +494,7 @@ app.get('/api/main-filter-learn-profiles', async(req, res) => {
                 us.is_learning = true ${filters.join(' ')}
             GROUP BY 
                 c.category, 
+                u.profile_picture,
                 u.username, 
                 us.is_learning,
                 us.is_teaching${groupBy.join(' ')}
@@ -520,6 +522,7 @@ app.get('/api/main-filter-learn-profiles', async(req, res) => {
     };
 });
 
+//send profiles matching the headers filters values
 app.post('/api/fetch-quick-filtered-profiles', async(req, res) => {
     const body = req.body;
     try {
@@ -532,7 +535,7 @@ app.post('/api/fetch-quick-filtered-profiles', async(req, res) => {
         };
         const toTeachMatches = await client.query(
             `
-                SELECT u.username, s.name, us.is_teaching, us.is_learning FROM users u
+                SELECT u.username, u.profile_picture, s.name, us.is_teaching, us.is_learning FROM users u
                 JOIN users_skills us ON us.user_id = u.id
                 JOIN skills s ON us.skill_id = s.id
                 WHERE us.is_teaching = true AND s.name = $1
@@ -540,7 +543,7 @@ app.post('/api/fetch-quick-filtered-profiles', async(req, res) => {
         );
         const toLearnMatches = await client.query(
             `
-                SELECT u.username, s.name, us.is_teaching, us.is_learning FROM users u
+                SELECT u.username, u.profile_picture, s.name, us.is_teaching, us.is_learning FROM users u
                 JOIN users_skills us ON us.user_id = u.id
                 JOIN skills s ON us.skill_id = s.id
                 WHERE us.is_learning = true AND s.name = $1
