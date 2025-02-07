@@ -54,9 +54,10 @@ app.get('/api', async(req, res) => {
     try {
         const learnProfiles = [];
         const teachProfiles = [];
+        //ensure the value is not null when executing the sql query
         const safeUsername = username || 'safeUsername';
 
-        //tolearn and toteach queries ensure that displayed profiles 
+        // tolearn and toteach queries ensure that displayed profiles 
         // have not requested to match with the user
         // the user has not sent them a request
         // the user is not currently matched with them
@@ -397,7 +398,8 @@ app.get('/api/main-filter-teach-profiles', async(req, res) => {
         preferredGender,
         toTeach,
         toTeachCategory,
-        yourGender
+        yourGender,
+        username,
     } = req.query;
 
     try {
@@ -421,10 +423,29 @@ app.get('/api/main-filter-teach-profiles', async(req, res) => {
             JOIN skills s ON us.skill_id = s.id
             JOIN categories_skills cs ON cs.skill_id = s.id
             JOIN categories c ON cs.category_id = c.id
-            WHERE us.is_teaching = true ${filters.join(' ')}
+            LEFT JOIN match_requests mr_sent 
+                ON 
+                mr_sent.u_id1 = (SELECT id FROM users WHERE username = $1) AND mr_sent.u_id2 = u.id
+            LEFT JOIN match_requests mr_recieved 
+                ON 
+                mr_recieved.u_id1 = u.id AND mr_recieved.u_id2 = (SELECT id FROM users WHERE username = $1)
+            LEFT JOIN matches m
+                ON 
+                (m.user_id = (SELECT id FROM users WHERE username = $1) AND m.match_id = u.id)
+                OR
+                (m.match_id = (SELECT id FROM users WHERE username = $1) AND m.user_id = u.id)
+            WHERE 
+                us.is_teaching = true ${filters.join(' ')}
+                AND
+                mr_sent.u_id2 IS NULL
+                AND 
+                mr_recieved.u_id2 IS NULL
+                AND 
+                m.match_id IS NULL
+                AND u.username != $1
             GROUP BY c.category, u.username, u.profile_picture, us.is_teaching, us.is_teaching${groupBy.join(' ')}
             ORDER BY u.username
-            `
+            `, [username]
         );
 
         //return immediately if no results are returned
@@ -490,8 +511,15 @@ app.get('/api/main-filter-learn-profiles', async(req, res) => {
                 categories_skills cs ON cs.skill_id = s.id
             JOIN    
                 categories c ON cs.category_id = c.id
+            JOIN 
+                matches m ON 
+                    m.user_id = (SELECT id FROM users WHERE username = u.username) 
+                OR 
+                    m.match_id = (SELECT id FROM users WHERE username = u.username)
             WHERE 
                 us.is_learning = true ${filters.join(' ')}
+                AND
+                m.user_id != (SELECT id FROM users WHERE username = u.username)
             GROUP BY 
                 c.category, 
                 u.profile_picture,
