@@ -391,7 +391,6 @@ app.post('/api/pick-skills', async(req, res) => {
 });
 
 app.get('/api/main-filter-teach-profiles', async(req, res) => {
-
     const { 
         meetUp,
         preferredGender,
@@ -399,7 +398,6 @@ app.get('/api/main-filter-teach-profiles', async(req, res) => {
         toTeachCategory,
         yourGender
     } = req.query;
-
     try {
         const filters = [];
         const groupBy = [];
