@@ -431,7 +431,7 @@ app.get('/api/main-filter-teach-profiles', async(req, res) => {
                 res.status(200).json({ message: 'No results' });
                 return;
             } else {
-                res.status(200).json({ message: 'No profiles want to learn ' + toTeach ? toTeach : toTeachCategory });
+                res.status(200).json({ message: 'No profiles want to teach ' + toTeach ? toTeach : toTeachCategory });
                 return;
             };
         };
